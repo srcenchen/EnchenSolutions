@@ -14,31 +14,29 @@ int findFinalValue1(vector<int>& nums, int original) {
 }
 
 int lowerBound(vector<int>& nums, int target) {
-    int left = -1, right = nums.size();
+    int left = -1, right = nums.size(); // (left, right) 开区间
     while (left + 1 != right) {
-        int mid = (left + right) / 2;
-        if (nums[mid] >= target) {
-            right = mid;
-        } else {
-            left = mid;
-        }
+        int mid = left + (right - left) / 2;
+        if (nums[mid] >= target)
+            right = mid; // 答案在左侧或就是mid，收缩右边界
+        else 
+            left = mid;  // 答案在右侧，收缩左边界
     }
-    return right;
+    return right; 
 }
 
+// 返回最后一个 <= target 的下标 (Upper Bound)
 int upperBound(vector<int>& nums, int target) {
-    int left = -1, right = nums.size();
+    int left = -1, right = nums.size(); // (left, right) 开区间
     while (left + 1 != right) {
-        int mid = (left + right) / 2;
-        if (nums[mid] <= target) {
-            left = mid;
-        } else {
-            right = mid;
-        }
+        int mid = left + (right - left) / 2;
+        if (nums[mid] <= target)
+            left = mid;  // 答案在右侧或就是mid，收缩左边界
+        else 
+            right = mid; // 答案在左侧，收缩右边界
     }
-    return left;
+    return left; 
 }
-
 // 二分查找做法
 int findFinalValue(vector<int>& nums, int original) {
     sort(nums.begin(), nums.end());
