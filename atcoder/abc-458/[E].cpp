@@ -51,7 +51,7 @@ long long nPr(long long n, long long k) {
     long long num = fact[n] * factInv[n-k] % MOD;
     return num % MOD;
 }
-// 容斥原理 + 排列组合（隔板法）
+// 容斥原理
 void solve() {
     int x1, x2, x3;
     cin >> x1 >> x2 >> x3;
