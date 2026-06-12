@@ -7,54 +7,52 @@ void solve() {
     cin >> h >> w;
     vector<string> g(h);
     int DIRS[8][2] = {{0, 1}, {1, 0}, {1, 1}, {-1, -1}, {-1, 0}, {0, -1}, {1, -1}, {-1, 1}};
-    queue<pair<int, int>> que;
+    vector<vector<int>> vis(h+1, vector<int>(w+1, -2));
+    int idx = 1;
+    queue<array<int, 2>> que;
     for (int i = 0; i < h; ++i) {
         cin >> g[i];
-        for (int j = 0; j < w; ++j)
-            if (g[i][j] == '#') {
-                que.push({i, j});
-            }
     }
-    int times = 0;
-    while (times < 100) {
-        int si = que.size();
-        auto bG = g;
-        while (si--) {
-            auto [i, j] = que.front();
-            for (auto& [mx, my] : DIRS) {
-                int x = i + mx, y = j + my;
-                if (x >= 0 && y >= 0 && x < h && j < w && bG[x][y] == '.') {
-                    g[x][y] = '#';
-                    que.push({x,y});
+    for (int i = 0; i < h; ++i) {
+        for (int j = 0; j < w; ++j) {
+            if (g[i][j] == '#') {
+                bool can_spread = false;
+                for (auto& [mx, my] : DIRS) {
+                    int x = i + mx, y = j + my;
+                    if (x >= 0 && y >= 0 && x < h && y < w && g[x][y] == '.') {
+                        can_spread = true;
+                        break;
+                    }
+                }
+                // 只有能扩散的黑块，才是合法的 0 号源点
+                if (can_spread) {
+                    que.push({i, j});
+                    vis[i][j] = idx; 
                 }
             }
-            g[i][j] = '.';
         }
-        times++;
     }
-    // for (int i = 0; i < 190; ++i) {
-    //     // backup old
-    //     auto bG = g;
-    //     for (int i = 0; i < h; ++i) {
-    //         for (int j = 0; j < w; ++j) {
-    //             int cnt = 0;
-    //             if (g[i][j] == '#') {
-    //                 g[i][j] = '.';
-    //                 continue;
-    //             }
-    //             for (auto& [mx, my] : DIRS) {
-    //                 int x = i + mx, y = j + my;
-    //                 if (x >= 0 && y >= 0 && x < h && j < w && bG[x][y] == '#') {
-    //                     cnt++;
-    //                 }
-    //             }
-    //             if (cnt != 0) g[i][j] = '#';
-    //         }
-    //     }
-    //     // printf("第%lld轮结束\n", i+1);
-    // }
-    for (auto& i : g) {
-        cout << i << endl;
+    while (!que.empty()) {
+        int size = que.size();
+        auto [i, j] = que.front();
+        que.pop();
+        for (auto& [mx, my] : DIRS) {
+            int x = i + mx, y = j + my;
+            if (x >= 0 && y >= 0 && x < h && y < w && vis[x][y] == -2) {
+                vis[x][y] = vis[i][j]+1;
+                que.push({x, y});
+            }
+        }
+    }
+    for (int i = 0; i < h; ++i) {
+        for (int j = 0; j < w; ++j) {
+            if (vis[i][j] & 1) {
+                cout << "#";
+            } else {
+                cout << ".";
+            }
+        }
+        cout << endl;
     }
 }
 signed main() {
@@ -67,41 +65,3 @@ signed main() {
     }
     return 0;
 }
-/*
-
-3 3
-###
-###
-##.
-5 7
-.#.....
-.......
-..#....
-.......
-....#..
-
-第1轮结束
-#.#....
-####...
-.#.#...
-.#####.
-...#.#.
-第2轮结束
-.#.##..
-....#..
-#.#.###
-#.....#
-###.#.#
-第3轮结束
-#.#..#.
-####.##
-.#.#...
-.#####.
-...#.#.
-第4轮结束
-.#.##.#
-....#..
-#.#.###
-#.....#
-###.#.#
-*/
