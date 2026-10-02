@@ -2,5 +2,5 @@
 .cph/
 .claude/
 *asm.dSYM
-# ignore binary
-!*.*
+.cph/
+.bin
